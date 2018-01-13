@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Manifest",
+    name: "ManOTA",
     products: [
         .library(name: "App", targets: ["App"]),
         .executable(name: "Run", targets: ["Run"])
