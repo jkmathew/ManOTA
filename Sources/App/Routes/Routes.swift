@@ -1,29 +1,12 @@
 import Vapor
 
 extension Droplet {
-    func setupRoutes() throws {
-        get("hello") { req in
-            var json = JSON()
-            try json.set("hello", "world")
-            return json
-        }
-
-        get("plaintext") { req in
-            return "Hello, world!"
-        }
+    func setupRoutes() throws {       
+        let buildController = BuildController()
+        let buildPath = "build"
+        get(buildPath, Build.parameter, "manifest.plist", handler: buildController.getManifest)
         
-        get("") { req in
-            return "Hello, world!"
-        }
+        try resource(buildPath, BuildController.self)
 
-        // response to requests to /info domain
-        // with a description of the request
-        get("info") { req in
-            return req.description
-        }
-
-        get("description") { req in return req.description }
-        
-        try resource("posts", PostController.self)
     }
 }

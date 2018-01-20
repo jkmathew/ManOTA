@@ -14,4 +14,4 @@ DerivedData/
 
 # End of https://www.gitignore.io/api/vapor
 
-Public/NPG.ipa
+Public/*.ipa
