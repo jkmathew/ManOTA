@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Error #(statusCode)</title>
+    </head>
+    <body>
+        <h2>#(statusCode) - #(reasonPhrase)</h2>
+        <p>#(reason)</p>
+        <p>#(code)</p>
+    </body>
+</html>
+

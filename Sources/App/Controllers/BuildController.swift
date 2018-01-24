@@ -3,21 +3,54 @@
 
 import Vapor
 import HTTP
+import Leaf
 
 final class BuildController: ResourceRepresentable {
-    func save(_ req: Request) throws -> ResponseRepresentable {
+    
+    private var droplet: Droplet!
+    
+    init() {
+        
+    }
+    
+    convenience init(_ drop: Droplet) throws {
+        self.init()
+        droplet = drop
+        try addRoutes()
+    }
+    
+    func addRoutes() throws {
+        let path = "build"
+        let buildPath = droplet.grouped(path)
+        buildPath.get(Build.parameter, "manifest.plist", handler: getManifest)
+        try droplet.resource(path, BuildController.self)
+    }
+    
+    func index(_ req: Request) throws -> ResponseRepresentable {
+        return try  APIResponse(data: Build.all().makeJSON().wrapped)
+    }
+    
+    func add(_ req: Request) throws -> ResponseRepresentable {
         let build = try req.build()
         try build.save()
-        return build
+        return try APIResponse(data: build.makeJSON().wrapped)
+    }
+    
+    func delete(_ req: Request, build: Build) throws -> ResponseRepresentable {
+        try build.delete()
+        return APIResponse(data: .null)
     }
     
     func getManifest(_ req: Request) throws -> ResponseRepresentable {
         let build = try req.parameters.next(Build.self)
-        return build
+        return try droplet.view.make("manifest", build.makeJSON())
     }
     
     func makeResource() -> Resource<Build> {
-        return Resource(store: save)
+        return Resource(
+            index: index,
+            store: add,
+            destroy: delete)
     
     }
 }

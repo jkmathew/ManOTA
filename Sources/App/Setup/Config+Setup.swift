@@ -1,5 +1,6 @@
 import FluentProvider
 import PostgreSQLProvider
+import LeafProvider
 
 extension Config {
     public func setup() throws {
@@ -9,12 +10,15 @@ extension Config {
 
         try setupProviders()
         try setupPreparations()
+        try setupMiddlewares()
     }
     
     /// Configure providers
     private func setupProviders() throws {
         try addProvider(FluentProvider.Provider.self)
         try addProvider(PostgreSQLProvider.Provider.self)
+        try addProvider(LeafProvider.Provider.self)
+
     }
     
     /// Add all models that should have their
@@ -22,5 +26,10 @@ extension Config {
     private func setupPreparations() throws {
         preparations.append(Post.self)
         preparations.append(Build.self)
+    }
+    
+    private func setupMiddlewares() throws {
+        
+        addConfigurable(middleware: App.ErrorMiddleware.init, name: "custom-error")
     }
 }
